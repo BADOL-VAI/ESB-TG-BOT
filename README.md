@@ -110,7 +110,7 @@ GitHub রিপো পেজে উপরের **Fork** বাটনে ক্
 ### ২) Clone বা Download
 ```bash
 git clone https://github.com/BADOL-VAI/ESB-TG-BOT.git
-cd YOUR_FORK_NAME
+cd ESB-TG-BOT
 ```
 অথবা **Code → Download ZIP** করে এক্সট্র্যাক্ট করুন।
 
