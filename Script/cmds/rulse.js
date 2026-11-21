@@ -22,7 +22,7 @@ module.exports = {
     const prefix = global.config.prefix || "/";
     const version = global.config.botInfo?.version || "4.0 Premium";
     const ownerMain = global.config.ownerInfo?.main || "ESB-TEAM";
-    const ownerId = global.config.adminUID?.[0] || "6954597258";
+    const ownerId = global.config?.ownerInfo?.owner?.id || global.config?.ownerInfo?.botAdmins?.[0] || global.config?.adminUID?.[0] || "Not set";
 
     const GROUP_NAME = "ESB PUBLIC GROUP";
     const GROUP_LINK = "https://t.me/ESB_TEAM_1";
