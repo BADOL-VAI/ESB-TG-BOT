@@ -56,13 +56,11 @@ function showCopyright() {
       return require(path.join(__dirname, '..', 'package.json')).version || '2.0.0';
     } catch { return '2.0.0'; }
   })();
-  console.log('
-' + c.cyan('═'.repeat(40)));
+  console.log(`\n` + c.cyan('═'.repeat(40)));
   console.log(c.bright(c.yellow('  ⚡ ESB-BOT v' + version + ' Starting...')));
   console.log(c.cyan('═'.repeat(40)));
   console.log(c.dim('  Open Source • No Owner Lock • Fully Customizable'));
-  console.log(c.cyan('═'.repeat(40)) + '
-');
+  console.log(c.cyan('═'.repeat(40)) + `\n`);
 }
 
 module.exports = { showBanner, getBanner, showCopyright };
