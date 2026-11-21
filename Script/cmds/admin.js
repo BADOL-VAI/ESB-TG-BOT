@@ -127,9 +127,10 @@ module.exports = {
     if (action === "remove") {
       targetId = String(targetId);
 
-      // MAIN OWNER PROTECTION
-      if (targetId === "6954597258") {
-        return await message.reply(`╭─❖─〔 ${botName} 〕─❖─╮\n│ ❌ Cannot remove Main Owner!\n│ 👑 ESB-TEAM\n╰─❖─〔 𝐄𝐒𝐁-𝐁𝐎𝐓 〕─❖─╯`);
+      // Protect the primary owner defined in config (changeable)
+      const primaryOwner = String(global.config?.ownerInfo?.owner?.id || global.config?.ownerInfo?.mainOwner?.id || "");
+      if (primaryOwner && targetId === primaryOwner) {
+        return await message.reply(`╭─❖─〔 ${botName} 〕─❖─╮\n│ ❌ Cannot remove Primary Owner!\n│ 👑 Change owner in config.json first\n╰─❖─〔 𝐄𝐒𝐁-𝐁𝐎𝐓 〕─❖─╯`);
       }
 
       const index = global.config.ownerInfo.botAdmins.indexOf(targetId);
