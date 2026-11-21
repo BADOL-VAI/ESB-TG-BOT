@@ -2,17 +2,17 @@
   "botInfo": {
     "name": "ESB BOT",
     "prefix": "/",
-    "token": "YOUR_BOT_TOKEN_HERE",
+    "token": "YOUR-BOT-TOKEN",
     "timezone": "Asia/Dhaka",
     "usePrefix": true
   },
   "ownerInfo": {
     "owner": {
       "name": "Owner",
-      "id": "YOUR_TELEGRAM_ID"
+      "id": "YOUR-TG-ID"
     },
     "botAdmins": [
-      "YOUR_TELEGRAM_ID"
+      "YOUR-TG-ID"
     ]
   },
   "settings": {
@@ -63,7 +63,7 @@
   "database": {
     "type": "json",
     "uriMongodb": "",
-    "path": "./DATABASE/data",
+    "path": "./data",
     "autoSyncWhenStart": false,
     "autoRefreshThreadInfoFirstTime": true
   },
@@ -97,5 +97,9 @@
     "branch": "",
     "folder": "",
     "pushIntervalSec": 120
-  }
+  },
+  "credentials": {
+    "token": ""
+  },
+  "token": ""
 }
