@@ -51,9 +51,18 @@ function showBanner() {
 }
 
 function showCopyright() {
-  console.log('\n' + c.cyan('═'.repeat(27)));
-  console.log(c.bright(c.yellow('  ⚡ ESB-BOT Running')));
-  console.log(c.cyan('═'.repeat(27)) + '\n');
+  const version = (() => {
+    try {
+      return require(path.join(__dirname, '..', 'package.json')).version || '2.0.0';
+    } catch { return '2.0.0'; }
+  })();
+  console.log('
+' + c.cyan('═'.repeat(40)));
+  console.log(c.bright(c.yellow('  ⚡ ESB-BOT v' + version + ' Starting...')));
+  console.log(c.cyan('═'.repeat(40)));
+  console.log(c.dim('  Open Source • No Owner Lock • Fully Customizable'));
+  console.log(c.cyan('═'.repeat(40)) + '
+');
 }
 
 module.exports = { showBanner, getBanner, showCopyright };
