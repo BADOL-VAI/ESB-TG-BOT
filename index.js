@@ -1,4 +1,3 @@
-
 const { spawn } = require("child_process");
 const path = require("path");
 const express = require("express");
@@ -20,20 +19,39 @@ if (!fs.existsSync(botPath)) {
 
 app.get("/", (req, res) => res.status(200).send("ESB BOT is running! 🚀"));
 app.get("/health", (req, res) => res.status(200).send("OK"));
-app.get("/uptime", (req, res) => res.status(200).json({ status: "ok", uptime: Math.floor(process.uptime()) }));
+app.get("/uptime", (req, res) => res.status(200).json({ status: "ok", uptime: Math.floor(process.uptime()), restarts: restartCount }));
 
-const server = app.listen(PORT, "0.0.0.0", () => console.log(`Process manager on port ${PORT}`));
+const server = app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Process manager on port ${PORT}`);
+});
 server.on("error", (err) => {
   if (err.code === "EADDRINUSE") console.log(`Port ${PORT} busy — continuing`);
   else console.log("HTTP error:", err.message);
 });
 
 function startBot() {
-  if (restartCount >= MAX_RESTART) { log.error("Max restart reached"); process.exit(1); }
+  if (restartCount >= MAX_RESTART) {
+    log.error("Max restart reached");
+    process.exit(1);
+  }
   log.info("Starting ESB BOT...");
-  botProcess = spawn("node", ["ESB-TEAM.js"], { cwd: __dirname, stdio: "inherit", env: process.env });
-  botProcess.on("close", (code) => {
-    log.info(`Bot stopped code: ${code}`);
+  
+  // Use pipe so we can see all output even if hosting mangles inherit
+  botProcess = spawn("node", ["ESB-TEAM.js"], {
+    cwd: __dirname,
+    stdio: ["ignore", "pipe", "pipe"],
+    env: { ...process.env, FORCE_COLOR: "1" }
+  });
+
+  botProcess.stdout.on("data", (data) => {
+    process.stdout.write(data);
+  });
+  botProcess.stderr.on("data", (data) => {
+    process.stderr.write(data);
+  });
+
+  botProcess.on("close", (code, signal) => {
+    log.info(`Bot stopped code: ${code} signal: ${signal || "none"}`);
     restartCount++;
     setTimeout(startBot, 3000);
   });
@@ -43,6 +61,17 @@ function startBot() {
     setTimeout(startBot, 5000);
   });
 }
-process.on("SIGINT", () => { if (botProcess) botProcess.kill("SIGINT"); process.exit(0); });
-process.on("SIGTERM", () => { if (botProcess) botProcess.kill("SIGTERM"); process.exit(0); });
+
+process.on("SIGINT", () => {
+  if (botProcess) botProcess.kill("SIGINT");
+  process.exit(0);
+});
+process.on("SIGTERM", () => {
+  if (botProcess) botProcess.kill("SIGTERM");
+  process.exit(0);
+});
+
+// Keep alive for free hostings
+setInterval(() => {}, 60 * 1000);
+
 startBot();
