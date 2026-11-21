@@ -58,11 +58,7 @@ async function loadCommands(showProgress = true) {
       if (!command.config) throw new Error('Missing config'); if (!command.config.name) throw new Error('Missing config.name');
 
       if (!command.config.author) command.config.author = "Community";
-      if (![].includes(command.config.author)) {
-        errorCommands.push({ file, error: `Unauthorized author: ${command.config.author}` });
-        if (showProgress) log.warn(`[SKIP] ${c.yellow(file)} - Author "${command.config.author}" not authorized`);
-        continue;
-      }
+      // Author lock removed for public open-source use
 
       if (!command.BADOL &&!command.onReply &&!command.onCallback &&!command.onLoad &&!command.onChat) throw new Error('Missing BADOL() function');
       if (global.badol.commands.has(command.config.name)) { errorCommands.push({ file, error: `Duplicate: ${command.config.name}` }); continue; }
@@ -90,11 +86,7 @@ async function loadEvents(showProgress = true) {
     try {
       const event = result.command; if (!event?.config?.name) throw new Error('Missing config');
       if (!event.config.author) event.config.author = "Community";
-      // Event এর জন্যও Dual Owner Check
-      if (![].includes(event.config.author)) {
-        errorEvents.push({ file, error: `Unauthorized author: ${event.config.author}` });
-        continue;
-      }
+      // Author lock removed for public open-source use
       if (!event.BADOL) throw new Error('Missing BADOL()'); global.badol.events.set(event.config.name, event); loadedEvents.push(file);
     } catch (error) { errorEvents.push({ file, error: error.message }); }
   }
