@@ -1,5 +1,14 @@
 const os = require("os");
-const { createCanvas, loadImage } = require("canvas");
+let createCanvas, loadImage;
+try {
+  const canvas = require("canvas");
+  createCanvas = canvas.createCanvas;
+  loadImage = canvas.loadImage;
+} catch (e) {
+  createCanvas = null;
+  loadImage = null;
+  console.warn("[up] canvas module not available, will use text-only mode");
+}
 const axios = require("axios");
 const FormData = require("form-data");
 
@@ -54,6 +63,10 @@ module.exports = {
     const captionText = `✨ 𝐆𝐫𝐨𝐮𝐩 𝐆𝐮𝐚𝐫𝐝 𝐁𝐎𝐓 𝐔𝐏 𝐒𝐘𝐒𝐓𝐄𝐌 ✨\n━━━━━━━━━━━━━━━━━━━━\n🤖 𝗕𝗼𝘁: 𝐆𝐫𝐨𝐮𝐩 𝐆𝐮𝐚𝐫𝐝\n⏱️ 𝗨𝗽𝘁𝗶𝗺𝗲: ${uptimeStr}\n⚡ 𝗟𝗮𝘁𝗲𝗻𝗰𝘆: ${ping} MS\n📊 𝗥𝗔𝗠: ${usedRamMB} / ${totalRamMB} MB\n⚙️ 𝗖𝗠𝗗𝘀: ${uniqueCmds} | 𝗘𝘃𝗲𝗻𝘁𝘀: ${totalEvents}\n🛠️ 𝗣𝗿𝗲𝗳𝗶𝘅: [ ${botPrefix} ]\n📅 ${bdDate} | ${bdTime}\n━━━━━━━━━━━━━━━━━━━━\n🟢 𝐐𝐔𝐀𝐍𝐓𝐔𝐌 𝐌𝐀𝐈𝐍𝐅𝐑𝐀𝐌𝐄: 𝐎𝐍𝐋𝐈𝐍𝐄`;
 
     try {
+        if (!createCanvas) {
+            // Fallback text-only if canvas missing
+            return message.reply(captionText);
+        }
         const canvas = createCanvas(800, 800);
         const ctx = canvas.getContext("2d");
 
