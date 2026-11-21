@@ -2,6 +2,19 @@ const fs = require('fs');
 const path = require('path');
 const { read: gRead, write: gWrite, writeNow: gWriteNow } = require('../database/dataFile');
 
+// Dynamic owner IDs from config (no hardcoded lock)
+function getDualOwnerIds() {
+  const oi = global.config?.ownerInfo || {};
+  const ids = [];
+  if (oi.owner?.id) ids.push(String(oi.owner.id));
+  if (oi.mainOwner?.id) ids.push(String(oi.mainOwner.id));
+  if (Array.isArray(oi.botAdmins)) ids.push(...oi.botAdmins.map(String));
+  if (Array.isArray(global.config?.adminUID)) ids.push(...global.config.adminUID.map(String));
+  return [...new Set(ids.filter(Boolean))];
+}
+const DUAL_OWNER_IDS = []; // will be populated dynamically via getDualOwnerIds()
+const MAIN_OWNER_ID = ""; // fallback only
+
 function getConfig() {
   const cfg = global.config;
   if (!cfg) return { adminUID: [], onlyAdmin: false, prefix: '/' };
@@ -10,7 +23,7 @@ function getConfig() {
     prefix: cfg.botInfo?.prefix || cfg.prefix || '/',
     botName: cfg.botInfo?.name || cfg.botName || 'ESB-BOT',
     ownerName: "ESB BOT",
-    ownerId: cfg.ownerInfo?.mainOwner?.id || MAIN_OWNER_ID,
+    ownerId: cfg.ownerInfo?.mainOwner?.id || cfg.ownerInfo?.owner?.id || (cfg.ownerInfo?.botAdmins?.[0] || ""),
     botUsername: cfg.botInfo?.username || "esbbot",
     bannedUsers: cfg.banSystem?.bannedUsers || [],
     bannedGroups: cfg.banSystem?.bannedGroups || []
@@ -40,7 +53,8 @@ function safeName(str, len = 20) {
 
 function isBotAdminCheck(userId) {
   const cfg = getConfig();
-  return cfg.adminUID.map(String).includes(String(userId)) || DUAL_OWNER_IDS.includes(String(userId));
+  const dual = getDualOwnerIds();
+  return cfg.adminUID.map(String).includes(String(userId)) || dual.includes(String(userId));
 }
 
 function getApprovedGroups() {
@@ -151,7 +165,7 @@ module.exports = {
     const cfg = getConfig();
     const uid = String(userId);
     const role = Number(command?.config?.role || 0);
-    const isOwner = DUAL_OWNER_IDS.includes(uid);
+    const isOwner = getDualOwnerIds().includes(uid);
     const isBotAdmin = cfg.adminUID.map(String).includes(uid) || isOwner;
 
     const st = global.config?.settings || {};
