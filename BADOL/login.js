@@ -250,6 +250,18 @@ async function login() {
     const { sendBotStartNotification } = require('./handlerEvents');
     await sendBotStartNotification(bot.telegram);
 
+    // Clear final status box so it is always visible in panel consoles
+    const cmdCount = global.badol?.commands ? [...new Map([...global.badol.commands.values()].map(c => [c.config.name, c])).values()].length : 0;
+    const evtCount = global.badol?.events ? global.badol.events.size : 0;
+    console.log('\n' + '═'.repeat(42));
+    console.log('  ✅ ESB-BOT IS FULLY READY');
+    console.log('  📦 Commands : ' + cmdCount);
+    console.log('  📡 Events   : ' + evtCount);
+    console.log('  🤖 Name     : ' + (botInfo.first_name || 'ESB-BOT'));
+    console.log('  🔗 Username : @' + (botInfo.username || 'unknown'));
+    console.log('  ⚡ Prefix   : ' + (conf.prefix || '/'));
+    console.log('═'.repeat(42) + '\n');
+
     await bot.launch({
       allowedUpdates: [
         'message',
@@ -262,6 +274,7 @@ async function login() {
     });
 
     global.log.success(`✓ Reaction + Chat Member updates enabled`);
+    global.log.success(`✓ Bot is now online and listening for updates`);
 
     process.once('SIGINT', () => bot.stop('SIGINT'));
     process.once('SIGTERM', () => bot.stop('SIGTERM'));
