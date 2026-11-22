@@ -25,7 +25,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/mohammadbadol/BADOL-TG-BOT"
+    "url": "https://github.com/BADOL-VAI/ESB-TG-BOT"
   },
   "engines": {
     "node": ">=18.0.0",
